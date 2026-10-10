@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Konversi mata uang</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="halaman">
+    <header class="kepala">
+      <h1>Konversi mata uang</h1>
+      <p id="status" class="status status-muat">Memuat kurs</p>
+    </header>
+
+    <section class="hasil" id="hasil" aria-live="polite">
+      <p class="hasil-petunjuk" id="hasil-petunjuk">Isi jumlah dan pilih mata uang, lalu tekan Konversi.</p>
+      <p class="hasil-angka" id="hasil-angka" hidden></p>
+      <p class="hasil-kurs" id="hasil-kurs" hidden></p>
+    </section>
+
+    <form id="form-konversi" class="form" novalidate>
+      <div class="kolom">
+        <label for="jumlah">Jumlah</label>
+        <input id="jumlah" type="number" inputmode="decimal" step="any" min="0" value="1" autocomplete="off">
+      </div>
+
+      <div class="pasangan">
+        <div class="kolom">
+          <label for="asal">Dari</label>
+          <select id="asal"></select>
+        </div>
+        <button type="button" id="tukar" class="tukar" aria-label="Tukar mata uang asal dan tujuan">&#8644;</button>
+        <div class="kolom">
+          <label for="tujuan">Ke</label>
+          <select id="tujuan"></select>
+        </div>
+      </div>
+
+      <p id="pesan-error" class="pesan-error" role="alert" hidden></p>
+
+      <button type="submit" class="tombol-utama">Konversi</button>
+    </form>
+
+    <section class="riwayat">
+      <div class="riwayat-kepala">
+        <h2>Riwayat konversi</h2>
+        <button type="button" id="hapus-riwayat" class="tombol-teks" hidden>Hapus riwayat</button>
+      </div>
+      <p id="riwayat-kosong" class="riwayat-kosong">Belum ada konversi. Hasilnya akan muncul di sini.</p>
+      <ul id="daftar-riwayat" class="daftar-riwayat"></ul>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
