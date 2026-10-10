@@ -30,7 +30,11 @@ cache = {"kurs": None, "waktu": 0.0}
 
 def ambil_dari_api():
     """Panggil API kurs, kembalikan dictionary {kode_mata_uang: kurs terhadap USD}."""
-    with urllib.request.urlopen(API_URL, timeout=5) as respons:
+    # Beberapa server menolak permintaan tanpa User-Agent, jadi kita sertakan
+    permintaan = urllib.request.Request(
+        API_URL, headers={"User-Agent": "Mozilla/5.0 (tugas-alpro-konversi)"}
+    )
+    with urllib.request.urlopen(permintaan, timeout=10) as respons:
         data = json.load(respons)
     kurs = dict(data["rates"])
     kurs["USD"] = 1.0  # API biasanya tidak menyertakan mata uang dasarnya
@@ -51,7 +55,9 @@ def dapatkan_kurs():
         cache["kurs"] = kurs
         cache["waktu"] = sekarang
         return kurs, "api"
-    except Exception:
+    except Exception as error:
+        # Tampilkan penyebab di terminal supaya mudah dicari tahu
+        print("API gagal dipanggil:", error)
         # 3. API gagal: pakai kurs terakhir yang tersimpan kalau ada
         if cache["kurs"]:
             return cache["kurs"], "cache"
