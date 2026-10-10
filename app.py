@@ -7,8 +7,7 @@ from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
 
-# Kurs cadangan (terhadap 1 USD). Angka hanya contoh, bukan kurs sebenarnya.
-# Dipakai kalau API gagal dan belum ada kurs yang pernah berhasil diambil.
+
 KURS_CADANGAN = {
     "USD": 1.0,
     "IDR": 16000.0,
@@ -17,27 +16,26 @@ KURS_CADANGAN = {
     "SGD": 1.35,
 }
 
-# Ganti sesuai dokumentasi API kurs yang kamu pakai (mis. Frankfurter).
-# Kalau URL salah atau API gagal, program tetap jalan dengan kurs cache/cadangan.
+
 API_URL = "https://api.frankfurter.dev/v1/latest?base=USD"
 
-# Kurs dianggap masih segar selama 10 menit (600 detik).
+
 MASA_CACHE = 600
 
-# Tempat menyimpan kurs terakhir yang berhasil diambil dari API.
+
 cache = {"kurs": None, "waktu": 0.0}
 
 
 def ambil_dari_api():
     """Panggil API kurs, kembalikan dictionary {kode_mata_uang: kurs terhadap USD}."""
-    # Beberapa server menolak permintaan tanpa User-Agent, jadi kita sertakan
+   
     permintaan = urllib.request.Request(
         API_URL, headers={"User-Agent": "Mozilla/5.0 (tugas-alpro-konversi)"}
     )
     with urllib.request.urlopen(permintaan, timeout=10) as respons:
         data = json.load(respons)
     kurs = dict(data["rates"])
-    kurs["USD"] = 1.0  # API biasanya tidak menyertakan mata uang dasarnya
+    kurs["USD"] = 1.0  
     return kurs
 
 
@@ -45,23 +43,20 @@ def dapatkan_kurs():
     """Kembalikan (kurs, sumber). Sumber: 'api', 'cache', atau 'cadangan'."""
     sekarang = time.time()
 
-    # 1. Pakai cache kalau masih segar
+    
     if cache["kurs"] and sekarang - cache["waktu"] < MASA_CACHE:
         return cache["kurs"], "api"
 
-    # 2. Coba ambil kurs terbaru dari API
+  
     try:
         kurs = ambil_dari_api()
         cache["kurs"] = kurs
         cache["waktu"] = sekarang
         return kurs, "api"
-    except Exception as error:
-        # Tampilkan penyebab di terminal supaya mudah dicari tahu
+    except Exception as error:    
         print("API gagal dipanggil:", error)
-        # 3. API gagal: pakai kurs terakhir yang tersimpan kalau ada
         if cache["kurs"]:
             return cache["kurs"], "cache"
-        # 4. Belum pernah berhasil: pakai kurs cadangan
         return KURS_CADANGAN, "cadangan"
 
 
@@ -89,7 +84,7 @@ def api_kurs():
 def api_konversi():
     data = request.get_json(silent=True) or {}
 
-    # Validasi jumlah
+ 
     try:
         jumlah = float(data.get("jumlah"))
     except (TypeError, ValueError):
@@ -97,7 +92,7 @@ def api_konversi():
     if not math.isfinite(jumlah) or jumlah <= 0:
         return pesan_error("Jumlah harus lebih dari 0")
 
-    # Validasi mata uang
+  
     kurs, sumber = dapatkan_kurs()
     asal = str(data.get("asal", "")).upper()
     tujuan = str(data.get("tujuan", "")).upper()
