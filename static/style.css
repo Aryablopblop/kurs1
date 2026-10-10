@@ -67,7 +67,7 @@ h2 {
 .status-cache,
 .status-cadangan { color: var(--kuning); }
 
-/* Hasil: bagian yang paling menonjol */
+
 .hasil {
   min-height: 148px;
   padding: 24px;
@@ -111,7 +111,7 @@ h2 {
   font-size: 0.9375rem;
 }
 
-/* Form */
+
 .form {
   display: grid;
   gap: 16px;
@@ -195,7 +195,7 @@ input {
   border-radius: 10px;
 }
 
-/* Fokus keyboard yang jelas */
+
 input:focus-visible,
 select:focus-visible,
 button:focus-visible {
@@ -203,7 +203,7 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
-/* Riwayat */
+
 .riwayat-kepala {
   display: flex;
   align-items: center;
